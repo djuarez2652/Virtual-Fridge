@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, request
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, addStockForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -83,7 +83,10 @@ def logout():
 
 @app.route("/stock")
 def stock():
-  return render_template('stock.html', subtitle='Stock page', text='Current Stock')
+  # stub code to stop it from throwing errors
+  add_stock_form = addStockForm()
+
+  return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
 
 
 @app.route("/recipes")
