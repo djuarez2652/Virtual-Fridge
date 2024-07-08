@@ -6,10 +6,25 @@
     <title>Project Title TBD</title>
 
     <style>
-        .site-header {
+        .nav-bar {
             font-size: 16px;
             background-color: lightgray;
             padding: 10px;
+            
+        }
+        .nav-bar ol {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .nav-elem {
+            display: inline-block;
+            margin: 10px;
+            color: white;
+        }
+
+        .row {
+            display: flex;
         }
 
         .column {
@@ -23,6 +38,12 @@
         }
         .btn:hover {
             color: white;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
     </style>
@@ -40,17 +61,18 @@
     {% endif %}
     {% endwith %}
   
-    <header class="site-header">
+    <nav class="nav-bar">
         <ul>
-            <li>
+            <li class="nav-elem">
               <a href="/stock">In Fridge</a>
             </li>
-            <li>
-              <a href="/recipes">Generate Recipe</a>
+            <li class="nav-elem">
+              <a href="/recipes">Generate Recipes</a>
             </li>
-          </ul>
-    </header>
+        </ul>
+    </nav>
 
+    {% block content %}{% endblock %}
 
 </body>
 </html>
