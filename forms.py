@@ -25,3 +25,4 @@ class addStockForm(FlaskForm):
     expire_date = DateField('Expiration Date',
                            validators=[DataRequired()])
     add_btn = SubmitField('Add')
+

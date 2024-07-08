@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div>
+        <div>
+            <form method="GET" action="">
+                {{ form.hidden_tag() }}
+                <fieldset>
+                    <legend>Register</legend>
+                    <div>
+                        {{ form.username.label() }}
+                        {% if form.username.errors %}
+                            {{ form.username(class="") }}
+                            <div>
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="") }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.password.label() }}
+                        {% if form.password.errors %}
+                            {{ form.password(class="") }}
+                            <div>
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.password(class="") }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.confirm_password.label() }}
+                        {% if form.confirm_password.errors %}
+                            {{ form.confirm_password(class="") }}
+                            <div>
+                                {% for error in form.confirm_password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirm_password(class="") }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        {{ form.submit(class="") }}
+                    </div>
+                </fieldset>
+            </form>
+            <div>
+                Already have an account?
+                <a href="/login">Sign in</a>
+            </div>
+        </div>
+    </div>
+{% endblock content%}
