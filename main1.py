@@ -56,12 +56,12 @@ def register():  # change if using different register thing
 
 
 @app.route("/stock")
-def titles():
+def stock():
   return render_template('stock.html', subtitle='Stock page', text='Current Stock')
 
 
 @app.route("/recipes")
-def comments():
+def recipes():
   return render_template('recipes.html', subtitle='Recipe page', text='Generate Recipes')
 
 
