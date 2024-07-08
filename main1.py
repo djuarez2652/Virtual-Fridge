@@ -1,25 +1,27 @@
 from flask import Flask, render_template, url_for, redirect, request
-from forms import RegistrationForm
+from forms import RegistrationForm, LoginForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
 app = Flask(__name__)
-proxied = FlaskBehindProxy(app)
 app.config['SECRET_KEY'] = '83d6f0aedb63b08422f3b396f423f79c'
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'  # database filename
 db = SQLAlchemy(app)
+proxied = FlaskBehindProxy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 
-class User(db.Model):  # Represents table for a single user, can change if using different thing
+class User(UserMixin, db.Model):  # Represents table for a single user, can change if using different thing
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(20), unique=True, nullable=False)
-  email = db.Column(db.String(120), unique=True, nullable=False)
+  # email = db.Column(db.String(120), unique=True, nullable=False)
   password = db.Column(db.String(60), nullable=False)
 
   def __repr__(self):
-    return f"User('{self.username}', '{self.email}')"
+    return f"User('{self.username}', '{self.username}')"
 
 
 class Stock(db.Model):  # Represents a food table storing all the food and expiration dates, each associated with a user id
@@ -35,24 +37,48 @@ with app.app_context():
   db.create_all()
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
 @app.route("/")      
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    login_message = "Login"
-    return render_template('login.html', subtitle='Login Page', text=login_message)
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        username = login_form.username.data
+        password = login_form.password.data
+
+        user = User.query.filter_by(username=username).first()
+
+        if user:
+            login_user(user)
+        else:
+            logout_user(user)
+            return render_template('login.html', form=login_form, incorrect=True)
+
+    return render_template('login.html', subtitle='Login Page', form=login_form, incorrect=False)
 
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():  # change if using different register thing
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+    reg_form = RegistrationForm()
+    if reg_form.validate_on_submit():
+        user = User(username=reg_form.username.data, password=reg_form.password.data)
         db.session.add(user)
         db.session.commit()
-
+        login_user(user)
         return redirect(url_for('home'))
     
-    return render_template('register.html', title='Register', form=form)   
+    return render_template('register.html', title='Register', form=reg_form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route("/stock")
