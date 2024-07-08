@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div>
+        <div>
+            <form method="GET" action="">
+                {{ form.hidden_tag() }}
+                <fieldset>
+                    <legend>Login</legend>
+                    <div>
+                        {% if incorrect %}
+                            <span>
+                                Username or Password is incorrect.
+                            </span>
+                        {% endif %}
+                        <div>
+                            {{ form.username.label() }}
+                            {% if form.username.errors %}
+                                {{ form.username(class="") }}
+                                <div>
+                                    {% for error in form.username.errors %}
+                                        <span>{{ error }}</span>
+                                </div>
+                            {% else %}
+                                {{ form.username(class="") }}
+                            {% endif %}
+                        </div>
+                        <div>
+                            {{ form.password.label() }}
+                            {% if form.password.errors %}
+                                {{ form.password(class="") }}
+                                <div>
+                                    {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {{ form.submit(class="") }}
+                    </div>
+                </fieldset>
+            </form>
+            <div>
+                New?
+                <a href="/register">Create an account</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
