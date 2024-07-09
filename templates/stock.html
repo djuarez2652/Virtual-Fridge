@@ -17,7 +17,12 @@
             <tr>
                 <td>{{f[0]}}</td>
                 <td>{{f[1]}}</td>
-                <td><button>Delete</button></td>
+                <td> 
+                    <a href="{{ url_for('remove_stock', item_name=f[0]) }}"
+                        onclick="return confirm('Do you want to delete food {{ f[0] }}?');" title="Delete Food">
+                        <button style="color:lightcoral">delete</button>
+                    </a>
+                </td>
             </tr>
             {% endfor %}
 
