@@ -33,7 +33,7 @@ class UsersTests(unittest.TestCase):
 
     def test_invalid_password_registration(self):
         response = self.register('test2', '1')
-        self.assertIn(b'Password must be between 8 and 20 characters long.', response.data)
+        self.assertIn(b'Field must be between 8 and 20 characters long.', response.data)
 
 
     def add_stock(self, item_name, expire_date):
