@@ -3,6 +3,7 @@ from forms import RegistrationForm, LoginForm, addStockForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -25,9 +26,10 @@ class User(UserMixin, db.Model):  # Represents table for a single user, can chan
 
 class Stock(db.Model):  # Represents a food table storing all the food and expiration dates, each associated with a user id
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)  # figure out how to ge this
+    user_id = db.Column(db.Integer, nullable=False)
     food_name = db.Column(db.String(100), nullable=False)
     expiration_date = db.Column(db.Date, nullable=False)
+
 
     def __repr__(self):
         return f"Food('{self.food_name}', '{self.expiration_date}')"
@@ -50,9 +52,10 @@ def login():
         password = login_form.password.data
 
         user = User.query.filter_by(username=username).first()
-        print(f"User {user.username} added to the database with ID: {user.id}")
-        if user:
+
+        if user and user.password == password:
             login_user(user)
+            return redirect(url_for('stock'))
         else:
             logout_user(user)
             return render_template('login.html', form=login_form, incorrect=True)
@@ -89,6 +92,7 @@ def stock():
         expiration_date = add_stock_form.expire_date.data
         user_id = current_user.id
         insert_food(user_id, food_name, expiration_date)
+        print(has_food(user_id))
         return redirect(url_for("stock"))
     return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
 
@@ -116,13 +120,12 @@ def insert_food(user_id, food_name, expiration_date):
     db.session.add(new_item)
     db.session.commit()
 
-
 # check if a user has a food item
-def has_food(user_id, food_name):
-    food_item = Stock.query.filter_by(user_id=user_id, food_name=food_name)
+def has_food(user_id):
+    food_item = Stock.query.filter_by(user_id=user_id).all()
     if food_item:
         return food_item
-    return None
+    return None  # user has no food itmes
 
 # pulls up all of the stock corresponding to a user
 def query_stock(user_id):
