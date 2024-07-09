@@ -1,14 +1,30 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>What's in The Fridge?</h1>
-<h2>{{subtitle}}</h2>
-<p>{{text}}</p>
 
 
-<p class="content-section">
+<div class="content-section">
     <!-- TODO: get the user's table and display it here -->
-    Things To Come...
-</p>
+
+    <table>
+        <tr>
+            <th>Food Name</th>
+            <th>Expire Date</th>
+            <th></th>
+          </tr>
+        
+            {% for f in stock_query%}
+            <tr>
+                <td>{{f[0]}}</td>
+                <td>{{f[1]}}</td>
+                <td><button>Delete</button></td>
+            </tr>
+            {% endfor %}
+
+      </table>
+    
+    
+</div>
 
 <div class="content-section">
     <form method="POST" action="">

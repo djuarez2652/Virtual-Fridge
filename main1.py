@@ -27,7 +27,7 @@ class Stock(db.Model):  # Represents a food table storing all the food and expir
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)  # figure out how to ge this
     food_name = db.Column(db.String(100), nullable=False)
-    expiration_date = db.Column(db.String(100), nullable=False)
+    expiration_date = db.Column(db.Date, nullable=False)
 
     def __repr__(self):
         return f"Food('{self.food_name}', '{self.expiration_date}')"
@@ -82,7 +82,6 @@ def logout():
 
 @app.route("/stock", methods=['GET', 'POST'])
 def stock():
-  # stub code to stop it from throwing errors
     add_stock_form = addStockForm()
     if add_stock_form.validate_on_submit():
         food_name = add_stock_form.item_name.data
@@ -90,7 +89,7 @@ def stock():
         user_id = current_user.id
         insert_food(user_id, food_name, expiration_date)
         return redirect(url_for("stock"))
-    return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
+    return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
 
 
 @app.route("/recipes")
@@ -112,6 +111,9 @@ def has_food(user_id, food_name):
         return food_item
     return None
 
+def query_stock(user_id):
+    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(Stock.user_id == user_id)).all()
+    return result
 
 if __name__ == '__main__':         \
     app.run(debug=True, host="0.0.0.0")
