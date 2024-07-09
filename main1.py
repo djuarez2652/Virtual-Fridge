@@ -17,7 +17,6 @@ login_manager.login_view = 'login'
 class User(UserMixin, db.Model):  # Represents table for a single user, can change if using different thing
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(20), unique=True, nullable=False)
-  # email = db.Column(db.String(120), unique=True, nullable=False)
   password = db.Column(db.String(60), nullable=False)
 
   def __repr__(self):
@@ -51,7 +50,7 @@ def login():
         password = login_form.password.data
 
         user = User.query.filter_by(username=username).first()
-
+        print(f"User {user.username} added to the database with ID: {user.id}")
         if user:
             login_user(user)
         else:
@@ -69,7 +68,7 @@ def register():  # change if using different register thing
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return redirect(url_for('home'))
+        return redirect(url_for('stock'))
     
     return render_template('register.html', title='Register', form=reg_form)
 
@@ -81,12 +80,17 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/stock")
+@app.route("/stock", methods=['GET', 'POST'])
 def stock():
   # stub code to stop it from throwing errors
-  add_stock_form = addStockForm()
-
-  return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
+    add_stock_form = addStockForm()
+    if add_stock_form.validate_on_submit():
+        food_name = add_stock_form.item_name.data
+        expiration_date = add_stock_form.expire_date.data
+        user_id = current_user.id
+        insert_food(user_id, food_name, expiration_date)
+        return redirect(url_for("stock"))
+    return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
 
 
 @app.route("/recipes")
