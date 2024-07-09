@@ -28,7 +28,8 @@ class Stock(db.Model):  # Represents a food table storing all the food and expir
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     food_name = db.Column(db.String(100), nullable=False)
-    expiration_date = db.Column(db.DateTime, nullable=False)
+    expiration_date = db.Column(db.Date, nullable=False)
+
 
     def __repr__(self):
         return f"Food('{self.food_name}', '{self.expiration_date}')"
@@ -83,7 +84,6 @@ def logout():
 
 @app.route("/stock", methods=['GET', 'POST'])
 def stock():
-  # stub code to stop it from throwing errors
     add_stock_form = addStockForm()
     if add_stock_form.validate_on_submit():
         food_name = add_stock_form.item_name.data
@@ -92,12 +92,20 @@ def stock():
         insert_food(user_id, food_name, expiration_date)
         print(has_food(user_id))
         return redirect(url_for("stock"))
-    return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
+    return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
 
+@app.route("/remove_stock", methods=['GET'])
+def remove_stock():
+  item_name = request.args['item_name']
+
+  remove_food(current_user.id, item_name)
+
+  
+  return redirect(url_for('stock'))
 
 @app.route("/recipes")
 def recipes():
-  return render_template('recipes.html', subtitle='Recipe page', text='Generate Recipes')
+  return render_template('recipes.html', stock_query=query_stock(current_user.id))
 
 
 # add a food item to database
@@ -113,6 +121,19 @@ def has_food(user_id):
         return food_item
     return None  # user has no food itmes
 
+# pulls up all of the stock corresponding to a user
+def query_stock(user_id):
+    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(Stock.user_id == user_id)).all()
+    return result
+
+# removes a food item with a user's id from the stock table
+def remove_food(user_id, food_name):
+  to_remove = Stock.query.filter_by(user_id=user_id, food_name=food_name).first()
+  if to_remove:
+      msg_text = 'Food item %s successfully removed' % str(to_remove)
+      db.session.delete(to_remove)
+      db.session.commit()
+      print(msg_text)
 
 if __name__ == '__main__':         \
     app.run(debug=True, host="0.0.0.0")
