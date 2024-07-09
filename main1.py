@@ -86,6 +86,7 @@ def logout():
 
 
 @app.route("/stock", methods=['GET', 'POST'])
+@login_required
 def stock():
     add_stock_form = addStockForm()
     if add_stock_form.validate_on_submit():
@@ -97,18 +98,22 @@ def stock():
         return redirect(url_for("stock"))
     return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
 
+# special URL for removal of stock item
 @app.route("/remove_stock", methods=['GET'])
 def remove_stock():
   item_name = request.args['item_name']
-
   remove_food(current_user.id, item_name)
 
-  
   return redirect(url_for('stock'))
 
 @app.route("/recipes")
+@login_required
 def recipes():
-  return render_template('recipes.html', stock_query=query_stock(current_user.id))
+
+  # get ingredients, if any
+  ingredients = request.args.getlist('ingredient')
+
+  return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients)
 
 
 # add a food item to database

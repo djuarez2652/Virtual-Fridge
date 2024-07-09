@@ -71,7 +71,11 @@
             <li class="nav-elem">
               <a href="/recipes">Generate Recipes</a>
             </li>
+            <li class="nav-elem">
+                <a href="/logout" onclick="return confirm('Do you want to log out of your account?');" title="Log Out">Log Out</a>
+              </li>
         </ul>
+        
     </nav>
 
     {% block content %}{% endblock %}

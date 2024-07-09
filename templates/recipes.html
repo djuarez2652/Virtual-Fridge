@@ -6,25 +6,38 @@
 
     <div class="column" style="background-color:#aaa;">
         <h2>Stock In Fridge</h2>
-        <table>
-            <tr>
-                <th>Food Name</th>
-                <th>Expire Date</th>
-                <th></th>
-              </tr>
+
+        <form method="GET" action="{{ url_for('recipes') }}">
+            <table style="width: 100%; text-align: center;">
+                <tr>
+                    <th>Food Name</th>
+                    <th>Expiration Date</th>
+                    <th></th>
+                </tr>
             
+                <!-- a row for each item -->
                 {% for f in stock_query%}
                 <tr>
                     <td>{{f[0]}}</td>
                     <td>{{f[1]}}</td>
+                    <td>
+                        <input type=checkbox name='ingredient' value='{{f[0]}}'> <br/>
+                    </td>
                 </tr>
                 {% endfor %}
-    
-          </table>
+
+            </table>
+
+            <button type="submit">ADD TO INGREDIENTS</button>
+        </form>
+
     </div>
     <div class="column" style="background-color:#bbb;">
         <h2>Ingredients</h2>
         <p>TODO: add to here</p>
+
+        <p>{{ingredients_list}}</p>
+        
     </div>
     <div class="column" style="background-color:#fff;">
         <h2>Recipe</h2>
@@ -37,6 +50,7 @@
     <button class="btn">
         WHAT SHOULD I COOK
     </button>
+    
 </div>
 
 
