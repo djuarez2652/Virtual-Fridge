@@ -66,24 +66,12 @@ def register():  # change if using different register thing
     if reg_form.validate_on_submit():
         user = User(username=reg_form.username.data, password=reg_form.password.data)
         db.session.add(user)
-        print(f"User {user.username} added to the database with ID: {user.id}")
         db.session.commit()
         login_user(user)
         return redirect(url_for('stock'))
     
     return render_template('register.html', title='Register', form=reg_form)
 
-@app.route("/add_stock", methods=['GET', 'POST'])  # link for adding entered info to db
-@login_required
-def add_stock():
-    add_form = addStockForm()
-    if add_form.validate_on_submit():
-        food_name = add_form.item_name.data
-        expiration_date = add_form.expire_date.data
-        user_id = current_user.id
-        insert_food(user_id, food_name, expiration_date)
-        return redirect(url_for("stock"))
-    return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
 
 @app.route('/logout')
 @login_required
@@ -92,12 +80,17 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/stock")
+@app.route("/stock", methods=['GET', 'POST'])
 def stock():
   # stub code to stop it from throwing errors
-  add_stock_form = addStockForm()
-
-  return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
+    add_stock_form = addStockForm()
+    if add_stock_form.validate_on_submit():
+        food_name = add_stock_form.item_name.data
+        expiration_date = add_stock_form.expire_date.data
+        user_id = current_user.id
+        insert_food(user_id, food_name, expiration_date)
+        return redirect(url_for("stock"))
+    return render_template('stock.html', subtitle='Stock page', text='Current Stock', form=add_stock_form)
 
 
 @app.route("/recipes")
