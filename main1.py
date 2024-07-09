@@ -3,7 +3,8 @@ from forms import RegistrationForm, LoginForm, addStockForm
 from flask_behind_proxy import FlaskBehindProxy
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
+import subprocess
+import signal
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '83d6f0aedb63b08422f3b396f423f79c'
@@ -113,5 +114,26 @@ def has_food(user_id, food_name):
     return None
 
 
-if __name__ == '__main__':         \
-    app.run(debug=True, host="0.0.0.0")
+def cleanup(signum, frame):
+    pass
+    # uncomment for styling cleanup
+
+    # print('Cleaning up tailwind')
+    # process.terminate()
+    # process.wait()
+    # print('Cleaned up')
+    # exit(0)
+
+
+# signal.signal(signal.SIGINT, cleanup)
+
+
+if __name__ == '__main__':
+    # uncomment if working on styling
+    # process = subprocess.Popen(['npx', 'tailwindcss', '-i', './static/styles/input.css', '-o', './static/styles/output.css', '--watch'])
+    try:
+        app.run(debug=True, host="0.0.0.0")
+    finally:
+        pass
+        # uncomment if working on styling
+        # cleanup(None, None)

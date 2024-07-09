@@ -1,58 +1,60 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <div>
-        <div>
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="flex flex-col gap-4 items-center justify-center p-8 rounded-lg shadow-md min-w-[300px]">
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
-                <fieldset>
-                    <legend>Register</legend>
-                    <div>
-                        {{ form.username.label() }}
-                        {% if form.username.errors %}
-                            {{ form.username(class="") }}
-                            <div>
-                                {% for error in form.username.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.username(class="") }}
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ form.password.label() }}
-                        {% if form.password.errors %}
-                            {{ form.password(class="") }}
-                            <div>
-                                {% for error in form.password.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.password(class="") }}
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ form.confirm_password.label() }}
-                        {% if form.confirm_password.errors %}
-                            {{ form.confirm_password(class="") }}
-                            <div>
-                                {% for error in form.confirm_password.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.confirm_password(class="") }}
-                        {% endif %}
-                    </div>
-                    <div>
-                        {{ form.submit(class="") }}
+                <fieldset  class="flex flex-col items-center gap-4 border border-black rounded-md p-4">
+                    <legend class="px-3">Register</legend>
+                    <div class="flex flex-col gap-4">
+                        <div class="form-group">
+                            {{ form.username.label() }}
+                            {% if form.username.errors %}
+                                {{ form.username(class="input-field is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.username(class="input-field") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password.label() }}
+                            {% if form.password.errors %}
+                                {{ form.password(class="input-field is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="input-field") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.confirm_password.label() }}
+                            {% if form.confirm_password.errors %}
+                                {{ form.confirm_password(class="input-field is-invalid") }}
+                                <div>
+                                    {% for error in form.confirm_password.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.confirm_password(class="input-field") }}
+                            {% endif %}
+                        </div>
+                        <div class="btn-div">
+                            {{ form.submit(class="btn") }}
+                        </div>
                     </div>
                 </fieldset>
             </form>
             <div>
                 Already have an account?
-                <a href="/login">Sign in</a>
+                <a href="/login" class="hover:pointer text-blue-500 underline">Sign in</a>
             </div>
         </div>
     </div>
