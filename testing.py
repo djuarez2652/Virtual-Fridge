@@ -19,6 +19,14 @@ class UnitTests(unittest.TestCase):
     def test_has_food(self):
         with self.assertRaises(Exception):
             has_food(-1)
+
+    def test_query_stock(self):
+        with self.assertRaises(Exception):
+            query_stock(-1)
+        
+    def test_remove_food(self):
+        with self.assertRaises(Exception):
+            remove_food(-1)
         
 
 if __name__ == '__main__':

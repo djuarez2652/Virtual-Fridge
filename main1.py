@@ -48,13 +48,22 @@ def load_user(user_id):
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
+        print("VALIDATED")
+        print("VALIDATED")
+        print("VALIDATED")
+        print("VALIDATED")
+        print("VALIDATED")
         username = login_form.username.data
         password = login_form.password.data
 
         user = User.query.filter_by(username=username).first()
-        print(f"User {user.username} added to the database with ID: {user.id}")
-        if user:
+        #print(f"User {user.username} added to the database with ID: {user.id}")
+        #print(user.username)
+
+        if user and user.password == password:
             login_user(user)
+            #print("SUCCESS")
+            return redirect(url_for('stock'))
         else:
             logout_user(user)
             return render_template('login.html', form=login_form, incorrect=True)
