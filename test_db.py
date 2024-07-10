@@ -65,43 +65,18 @@ APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
 
 params = {
     'type' : 'public',
-    'q' : ingredients_list,
+    'q' : ['fish', 'fruit'],
     'app_id' : APP_ID,
     'app_key' : APP_KEY,
 }
 
 response = requests.get(BASE_URL, params=params)
-recipe_dict = response.json()
+dict_format = response.json()
 
 print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
 print(dict_format['hits'][0]['recipe']['label']) # recipe name
 print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
 print(dict_format['hits'][0]['recipe']['url']) # original recipe url
-
-  '''if ingredients:
-    BASE_URL = 'https://api.edamam.com/api/recipes/v2'
-    APP_ID = 'd3661e3f'
-    APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
-
-    params = {
-        'type' : 'public',
-        'q' : ingredients,
-        'app_id' : APP_ID,
-        'app_key' : APP_KEY,
-    }
-
-    response = requests.get(BASE_URL, params=params)
-    recipe_dict = response.json()
-
-    # check if recipe actually found:
-
-    print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
-    print(dict_format['hits'][0]['recipe']['label']) # recipe name
-    print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
-    print(dict_format['hits'][0]['recipe']['url']) # original recipe url'''
-
-
-
 
 #totaltime and totalweight are the last things for each recipe
 
