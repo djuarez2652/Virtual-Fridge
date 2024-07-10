@@ -174,25 +174,25 @@ def remove_food(user_id, food_name):
       print(msg_text)
 
 def cleanup(signum, frame):
-    pass
+    # pass
     # uncomment for styling cleanup
 
-    # print('Cleaning up tailwind')
-    # process.terminate()
-    # process.wait()
-    # print('Cleaned up')
-    # exit(0)
+    print('Cleaning up tailwind')
+    process.terminate()
+    process.wait()
+    print('Cleaned up')
+    exit(0)
 
 
-# signal.signal(signal.SIGINT, cleanup)
+signal.signal(signal.SIGINT, cleanup)
 
 
 if __name__ == '__main__':
     # uncomment if working on styling
-    # process = subprocess.Popen(['npx', 'tailwindcss', '-i', './static/styles/input.css', '-o', './static/styles/output.css', '--watch'])
+    process = subprocess.Popen(['npx', 'tailwindcss', '-i', './static/styles/input.css', '-o', './static/styles/output.css', '--watch'])
     try:
         app.run(debug=True, host="0.0.0.0")
     finally:
-        pass
+        # pass
         # uncomment if working on styling
-        # cleanup(None, None)
+        cleanup(None, None)
