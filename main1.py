@@ -113,38 +113,45 @@ def recipes():
 
   # get ingredients, if any
   ingredients = request.args.getlist('ingredient')
+  disp_recipe = request.args.getlist('display_recipe')
 
-  '''if ingredients:
-    BASE_URL = 'https://api.edamam.com/api/recipes/v2'
-    APP_ID = 'd3661e3f'
-    APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
-    
-    params = {
-        'type' : 'public',
-        'q' : ingredients,
-        'app_id' : APP_ID,
-        'app_key' : APP_KEY,
-    }
-
-    response = requests.get(BASE_URL, params=params)
-    recipe_dict = response.json()
-
-    # check if recipe actually found:
-
-    print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
-    print(dict_format['hits'][0]['recipe']['label']) # recipe name
-    print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
-    print(dict_format['hits'][0]['recipe']['url']) # original recipe url'''
-
-  return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients)
+  return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients, display_recipe=disp_recipe)
 
 
-'''@app.route("/generate_recipe", methods=['POST'])
+@app.route("/generate_recipe", methods=['GET'])
 @login_required
 def generate_recipe():
 
+    # get ingredients, if any
+    query_ingredients = request.args.getlist('input')
+
+
+    if query_ingredients:
+        BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+        APP_ID = 'd3661e3f'
+        APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
+        
+        params = {
+            'type' : 'public',
+            'q' : query_ingredients,
+            'app_id' : APP_ID,
+            'app_key' : APP_KEY,
+        }
+
+        response = requests.get(BASE_URL, params=params)
+        recipe_dict = response.json()
+
+        # check if recipe actually found:
+
+        chosen_recipe = recipe_dict['hits'][0]['recipe']
+        display_info = []
+        display_info.append(chosen_recipe['label']) # recipe name
+        display_info.append(chosen_recipe['ingredientLines']) # list of ingredients
+        display_info.append(chosen_recipe['shareAs']) # edamam recipe url
+        display_info.append(chosen_recipe['url']) # original recipe url
     
-'''
+    return redirect(url_for('recipes', ingredient=query_ingredients, display_recipe=display_info))
+    
 
 # add a food item to database
 def insert_food(user_id, food_name, expiration_date):
