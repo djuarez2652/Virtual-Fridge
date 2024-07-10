@@ -41,23 +41,39 @@
             </div>
             <div class="w-1/3 p-2 flex flex-col gap-4 border border-black rounded">
                 <h2 class="text-2xl">Ingredients</h2>
-                    {% for item in ingredients_list %}
-                        <div>
-                            <p>{{ item }}</p>
-                        </div>
+                <div class="flex flex-col">
+                    {% if not ingredients_list %}
+                        <p>No ingredients added...</p>
+                    {% else %}
+                        {% for item in ingredients_list %}
+                            <div class="p-2 w-fit">
+                                - {{ item }}
+                            </div>
 
-                    {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if ingredients_list %}
+                    <a class="mt-auto ml-auto mr-2 mb-2 px-2 w-fit btn-divv" href="{{url_for('generate_recipe', input=ingredients_list)}}">
+                        <button>WHAT SHOULD I COOK</button>
+                    </a>
+                {% endif %}
             </div>
             <div class="w-1/3 p-2 flex flex-col gap-4 border border-black rounded">
                 <h2 class="text-2xl">Recipe</h2>
-                <h3>{{display_recipe[0]}}</h3>
-                <p>Ingredients: {{display_recipe[1]}}</p>
-                <p>Edamam URL at: <a href="{{display_recipe[2]}}" style="color:blue">{{display_recipe[2]}}</a></p>
-                <p>Recipe URL at: <a href="{{display_recipe[3]}}" style="color:blue">{{display_recipe[3]}}</a></p>
+                <h3 class="text-lg">{{display_recipe[0]}}</h3>
+                <div>
+                    <p>Ingredients: {{display_recipe[1]}}</p>
+{#                    {% if display_recipe[1] %}#}
+{#                        {% for ingredient in display_recipe[1] %}#}
+{#                            <p>{{ ingredient }}</p>#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+                </div>
+                <p>Edamam URL at: <a class="underline text-blue-500" href="{{display_recipe[2]}}">{{display_recipe[2]}}</a></p>
+                <p>Recipe URL at: <a class="underline text-blue-500" href="{{display_recipe[3]}}">{{display_recipe[3]}}</a></p>
             </div>
         </div>
-        <a href="{{url_for('generate_recipe', input=ingredients_list)}}">
-            <button>WHAT SHOULD I COOK</button>
-        </a>
+
     </div>
 {% endblock content%}
