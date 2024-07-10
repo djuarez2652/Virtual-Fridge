@@ -47,7 +47,7 @@ class UsersTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_item_name(self):
-        response = self.add_stock('a', '10-12-2024')
+        response = self.add_stock('aa', '10-12-2024')
         self.assertIn(b'Field must be between 2 and 20 characters long.', response.data)
 
 
