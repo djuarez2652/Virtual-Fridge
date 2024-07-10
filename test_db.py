@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine, Column, String, Integer, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime
+import requests
+import pprint
 
-engine = create_engine('sqlite:///stock_test.db')  # db for just testing basic adding and querying
+'''engine = create_engine('sqlite:///stock_test.db')  # db for just testing basic adding and querying
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -53,5 +55,54 @@ if __name__ == '__main__':
     insert_food(1, "tree", '12-30-2004')
     # get a list of all the food someone has
     print(has_food(1))
+'''
+
+BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+APP_ID = 'd3661e3f'
+APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
+
+# ingredients_list = 
+
+params = {
+    'type' : 'public',
+    'q' : ingredients_list,
+    'app_id' : APP_ID,
+    'app_key' : APP_KEY,
+}
+
+response = requests.get(BASE_URL, params=params)
+recipe_dict = response.json()
+
+print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
+print(dict_format['hits'][0]['recipe']['label']) # recipe name
+print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
+print(dict_format['hits'][0]['recipe']['url']) # original recipe url
+
+  '''if ingredients:
+    BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+    APP_ID = 'd3661e3f'
+    APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
+
+    params = {
+        'type' : 'public',
+        'q' : ingredients,
+        'app_id' : APP_ID,
+        'app_key' : APP_KEY,
+    }
+
+    response = requests.get(BASE_URL, params=params)
+    recipe_dict = response.json()
+
+    # check if recipe actually found:
+
+    print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
+    print(dict_format['hits'][0]['recipe']['label']) # recipe name
+    print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
+    print(dict_format['hits'][0]['recipe']['url']) # original recipe url'''
 
 
+
+
+#totaltime and totalweight are the last things for each recipe
+
+#for ... in ingredients:

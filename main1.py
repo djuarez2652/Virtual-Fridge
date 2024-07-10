@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import subprocess
 import signal
 from datetime import datetime
+import requests
 
 
 app = Flask(__name__)
@@ -114,6 +115,15 @@ def recipes():
   ingredients = request.args.getlist('ingredient')
 
   return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients)
+
+
+'''@app.route("/generate_recipe", methods=['POST'])
+@login_required
+def generate_recipe():
+
+    
+'''
+
 
 
 # add a food item to database
