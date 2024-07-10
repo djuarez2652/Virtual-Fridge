@@ -60,7 +60,7 @@ def login():
             login_user(user)
             return redirect(url_for('stock'))
         else:
-            logout_user(user)
+            logout_user()
             return render_template('login.html', form=login_form, incorrect=True)
 
     return render_template('login.html', subtitle='Login Page', form=login_form, incorrect=False)
