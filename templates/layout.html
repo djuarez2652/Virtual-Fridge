@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-screen w-screen">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,32 +7,25 @@
     <title>Project Title TBD</title>
 
     <style>
-        .nav-bar {
-            font-size: 16px;
-            background-color: lightgray;
-            padding: 10px;
-            
-        }
-        .nav-bar ol {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        .nav-elem {
-            display: inline-block;
-            margin: 10px;
-            color: white;
-        }
+        {#.nav-bar {#}
+        {#    font-size: 16px;#}
+        {#    background-color: lightgray;#}
+        {#    padding: 10px;}#}
+        {#.nav-bar ol {#}
+        {#    list-style-type: none;#}
+        {#    padding-left: 0;}#}
+        {#.nav-elem {#}
+        {#    display: inline-block;#}
+        {#    margin: 10px;#}
+        {#    color: white;}#}
 
         .row {
             display: flex;
         }
-
         .column {
             flex: 50%;
             padding: 10px;
         }
-
         .btn {
             color: lightseagreen;
             padding:10px
@@ -40,45 +33,30 @@
         .btn:hover {
             color: white;
         }
-
         .center {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-
     </style>
-
-
 </head>
 <body>
     
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">
-      {{ message }}
-    </div>
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
     {% endfor %}
     {% endif %}
     {% endwith %}
   
-    <nav class="nav-bar">
-        <ul>
-            <li class="nav-elem">
-              <a href="/stock">In Fridge</a>
-            </li>
-            <li class="nav-elem">
-              <a href="/recipes">Generate Recipes</a>
-            </li>
-            <li class="nav-elem">
-                <a href="/logout" onclick="return confirm('Do you want to log out of your account?');" title="Log Out">Log Out</a>
-              </li>
-        </ul>
-        
+    <nav class="flex w-full text-base bg-zinc-400 py-2 px-4">
+            <a class="m-2.5 text-white" href="/stock">In Fridge</a>
+            <a class="m-2.5 text-white" href="/recipes">Generate Recipes</a>
+            <a class="m-2.5 text-white ml-auto" href="/logout" onclick="return confirm('Do you want to log out of your account?');" title="Log Out">Log Out</a>
     </nav>
-
     {% block content %}{% endblock %}
-
 </body>
 </html>

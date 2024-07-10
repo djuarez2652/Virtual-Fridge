@@ -4,43 +4,43 @@
         <div class="flex flex-col gap-4 items-center justify-center p-8 rounded-lg shadow-md min-w-[300px]">
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
-                <fieldset class="flex flex-col items-center gap-4 border border-black rounded-md p-4">
+                <fieldset class="fieldset-form">
                     <legend class="px-3">Login</legend>
                     <div class="flex flex-col gap-4">
                         {% if incorrect %}
-                            <span class="bg-red-400 p-3">
+                            <span class="animate-rotate bg-red-400 p-3">
                                 Username or Password is incorrect.
                             </span>
                         {% endif %}
-                        <div class="form-group">
+                        <div class="flex justify-between">
                             {{ form.username.label() }}
                             {% if form.username.errors %}
-                                {{ form.username(class="input-field is-invalid") }}
-                                <div class="invalid-feedback">
+                                {{ form.username(class="border border-black rounded ml-2.5 p-1") }}
+                                <div class="bg-red-400">
                                     {% for error in form.username.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.username(class="input-field") }}
+                                {{ form.username(class="border border-black rounded ml-2.5 p-1") }}
                             {% endif %}
                         </div>
-                        <div class="form-group">
+                        <div class="flex justify-between">
                             {{ form.password.label() }}
                             {% if form.password.errors %}
-                                {{ form.password(class="input-field is-invalid") }}
-                                <div class="invalid-feedback">
+                                {{ form.password(class="border border-black rounded ml-2.5 p-1") }}
+                                <div class="bg-red-400">
                                     {% for error in form.password.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.password(class="input-field") }}
+                                {{ form.password(class="border border-black rounded ml-2.5 p-1") }}
                             {% endif %}
                         </div>
                     </div>
-                    <div class="btn-div">
-                        {{ form.submit(class="btn") }}
+                    <div class="btn-divv">
+                        {{ form.submit(class="btnn") }}
                     </div>
                 </fieldset>
             </form>
