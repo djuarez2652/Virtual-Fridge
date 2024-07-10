@@ -28,31 +28,44 @@
 
             </table>
 
-            <button type="submit">ADD TO INGREDIENTS</button>
+            <button type="submit">UPDATE INGREDIENTS</button>
         </form>
 
     </div>
     <div class="column" style="background-color:#bbb;">
         <h2>Ingredients</h2>
-        <p>TODO: add to here</p>
 
-        <p>{{ingredients_list}}</p>
+        {% for item in ingredients_list%}
+            <div>
+                <p>{{item}}</p>
+            </div>
+            
+        {% endfor %}
+
+        
         
     </div>
     <div class="column" style="background-color:#fff;">
         <h2>Recipe</h2>
-        <p>TODO: display response</p>
+
+        <h3>{{display_recipe[0]}}</h3>
+
+        <p>Ingredients: {{display_recipe[1]}}</p>
+
+        <p>Edamam URL at: <a href="{{display_recipe[2]}}" style="color:blue">{{display_recipe[2]}}</a></p>
+        <p>Recipe URL at: <a href="{{display_recipe[3]}}" style="color:blue">{{display_recipe[3]}}</a></p>
+
     </div>
 
 </div>
 
 <div class="center">
+    <a href="{{url_for('generate_recipe', input=ingredients_list)}}">
     <button class="btn">
         WHAT SHOULD I COOK
     </button>
+    </a>
     
 </div>
-
-
 
 {% endblock content%}
