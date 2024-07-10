@@ -133,7 +133,7 @@ def generate_recipe():
         
         params = {
             'type' : 'public',
-            'q' : query_ingredients,
+            'q' : str(query_ingredients),
             'app_id' : APP_ID,
             'app_key' : APP_KEY,
         }
