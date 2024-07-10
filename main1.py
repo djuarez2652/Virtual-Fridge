@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import subprocess
 import signal
 from datetime import datetime
+import requests
 
 
 app = Flask(__name__)
@@ -113,8 +114,37 @@ def recipes():
   # get ingredients, if any
   ingredients = request.args.getlist('ingredient')
 
+  '''if ingredients:
+    BASE_URL = 'https://api.edamam.com/api/recipes/v2'
+    APP_ID = 'd3661e3f'
+    APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
+    
+    params = {
+        'type' : 'public',
+        'q' : ingredients,
+        'app_id' : APP_ID,
+        'app_key' : APP_KEY,
+    }
+
+    response = requests.get(BASE_URL, params=params)
+    recipe_dict = response.json()
+
+    # check if recipe actually found:
+
+    print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
+    print(dict_format['hits'][0]['recipe']['label']) # recipe name
+    print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
+    print(dict_format['hits'][0]['recipe']['url']) # original recipe url'''
+
   return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients)
 
+
+'''@app.route("/generate_recipe", methods=['POST'])
+@login_required
+def generate_recipe():
+
+    
+'''
 
 # add a food item to database
 def insert_food(user_id, food_name, expiration_date):
