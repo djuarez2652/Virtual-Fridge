@@ -28,15 +28,21 @@
 
             </table>
 
-            <button type="submit">ADD TO INGREDIENTS</button>
+            <button type="submit">UPDATE INGREDIENTS</button>
         </form>
 
     </div>
     <div class="column" style="background-color:#bbb;">
         <h2>Ingredients</h2>
-        <p>TODO: add to here</p>
 
-        <p>{{ingredients_list}}</p>
+        {% for item in ingredients_list%}
+            <div>
+                <p>{{item}}</p>
+            </div>
+            
+        {% endfor %}
+
+        
         
     </div>
     <div class="column" style="background-color:#fff;">
@@ -52,7 +58,5 @@
     </button>
     
 </div>
-
-
 
 {% endblock content%}
