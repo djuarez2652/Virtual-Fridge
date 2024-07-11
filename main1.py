@@ -1,12 +1,13 @@
-from flask import Flask, render_template, url_for, redirect, request
-from forms import RegistrationForm, LoginForm, addStockForm
-from flask_behind_proxy import FlaskBehindProxy
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import subprocess
+import ast
 import signal
-from datetime import datetime
 import requests
+import subprocess
+from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+from flask_behind_proxy import FlaskBehindProxy
+from forms import RegistrationForm, LoginForm, addStockForm
+from flask import Flask, render_template, url_for, redirect, request
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
 app = Flask(__name__)
@@ -114,6 +115,8 @@ def recipes():
   # get ingredients, if any
   ingredients = request.args.getlist('ingredient')
   disp_recipe = request.args.getlist('display_recipe')
+  if disp_recipe:
+      disp_recipe[1] = ast.literal_eval(disp_recipe[1])
 
   return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients, display_recipe=disp_recipe)
 
@@ -133,7 +136,7 @@ def generate_recipe():
         
         params = {
             'type' : 'public',
-            'q' : query_ingredients,
+            'q' : str(query_ingredients),
             'app_id' : APP_ID,
             'app_key' : APP_KEY,
         }
@@ -146,12 +149,23 @@ def generate_recipe():
         chosen_recipe = recipe_dict['hits'][0]['recipe']
         display_info = []
         display_info.append(chosen_recipe['label']) # recipe name
+        print(type(chosen_recipe['ingredientLines']))
         display_info.append(chosen_recipe['ingredientLines']) # list of ingredients
         display_info.append(chosen_recipe['shareAs']) # edamam recipe url
         display_info.append(chosen_recipe['url']) # original recipe url
-    
+        # display_info.append(shorten_url(chosen_recipe['shareAs'])) # shortened edamam recipe url
+        # display_info.append(shorten_url(chosen_recipe['url'])) # shortened original recipe url
+
     return redirect(url_for('recipes', ingredient=query_ingredients, display_recipe=display_info))
-    
+
+
+def shorten_url(url):
+    # can update url to be another API call
+    tiny_url = 'http://tinyurl.com/api-create.php?url='
+    response = requests.get(tiny_url + url)
+
+    return response.text
+
 
 # add a food item to database
 def insert_food(user_id, food_name, expiration_date):
@@ -181,16 +195,14 @@ def remove_food(user_id, food_name):
       print(msg_text)
 
 def cleanup(signum, frame):
-    pass
     # uncomment for styling cleanup
+    pass
 
     # print('Cleaning up tailwind')
     # process.terminate()
     # process.wait()
     # print('Cleaned up')
     # exit(0)
-
-
 # signal.signal(signal.SIGINT, cleanup)
 
 
@@ -200,6 +212,6 @@ if __name__ == '__main__':
     try:
         app.run(debug=True, host="0.0.0.0")
     finally:
-        pass
         # uncomment if working on styling
+        pass
         # cleanup(None, None)
