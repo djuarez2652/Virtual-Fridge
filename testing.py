@@ -1,7 +1,10 @@
-import unittest, sys, os
+from main1 import *
+import unittest
+import sys
+import os
 
 sys.path.append('../seo-week-4')
-from main1 import *
+
 
 class UnitTests(unittest.TestCase):
 
@@ -11,7 +14,7 @@ class UnitTests(unittest.TestCase):
         with app.app_context():
             db.drop_all()
             db.create_all()
-    
+
     def test_insert_food(self):
         with self.assertRaises(Exception):
             insert_food(-1, 'goldfish', '12-12-1212')
@@ -23,11 +26,11 @@ class UnitTests(unittest.TestCase):
     def test_query_stock(self):
         with self.assertRaises(Exception):
             query_stock(-1)
-        
+
     def test_remove_food(self):
         with self.assertRaises(Exception):
             remove_food(-1)
-        
+
 
 if __name__ == '__main__':
     unittest.main()
