@@ -7,7 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_behind_proxy import FlaskBehindProxy
 from forms import RegistrationForm, LoginForm, addStockForm
 from flask import Flask, render_template, url_for, redirect, request
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user
+from flask_login import login_required, logout_user, current_user
 
 
 app = Flask(__name__)
@@ -18,16 +19,19 @@ proxied = FlaskBehindProxy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+# Represents a website user, specific ID used to keep track of stock
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
 
-class User(UserMixin, db.Model):  # Represents a website user, specific ID used to keep track of stock
-  username = db.Column(db.String(20), unique=True, nullable=False)
-  password = db.Column(db.String(60), nullable=False)
-
-  def __repr__(self):
-    return f"User('{self.username}', '{self.username}')"
+    def __repr__(self):
+        return f"User('{self.username}', '{self.username}')"
 
 
-class Stock(db.Model):  # Represents a food table storing all the food and expiration dates, each associated with a user id
+# Represents a food table storing all the food and expiration 
+# dates, each associated with a user id
+class Stock(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     food_name = db.Column(db.String(100), nullable=False)
@@ -37,7 +41,7 @@ class Stock(db.Model):  # Represents a food table storing all the food and expir
         return f"Food('{self.food_name}', '{self.expiration_date}')"
 
 with app.app_context():
-  db.create_all()
+    db.create_all()
 
 
 @login_manager.user_loader
@@ -60,9 +64,11 @@ def login():
             return redirect(url_for('stock'))
         else:
             logout_user()
-            return render_template('login.html', form=login_form, incorrect=True)
+            return render_template('login.html', 
+                                    form=login_form, incorrect=True)
 
-    return render_template('login.html', subtitle='Login Page', form=login_form, incorrect=False)
+    return render_template('login.html', 
+                            subtitle='Login Page', form=login_form, incorrect=False)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -96,28 +102,31 @@ def stock():
         insert_food(user_id, food_name, expiration_date)
         print(has_food(user_id))
         return redirect(url_for("stock"))
-    return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
+    return render_template('stock.html', 
+                            form=add_stock_form, stock_query=query_stock(current_user.id))
 
 
 # special URL for removal of stock item
 @app.route("/remove_stock", methods=['GET'])
 def remove_stock():
-  item_name = request.args['item_name']
-  remove_food(current_user.id, item_name)
+    item_name = request.args['item_name']
+    remove_food(current_user.id, item_name)
 
-  return redirect(url_for('stock'))
+    return redirect(url_for('stock'))
 
 
 @app.route("/recipes")
 @login_required
 def recipes():
-  # get ingredients, if any
-  ingredients = request.args.getlist('ingredient')
-  disp_recipe = request.args.getlist('display_recipe')
-  if disp_recipe:
-      disp_recipe[1] = ast.literal_eval(disp_recipe[1])
+    # get ingredients, if any
+    ingredients = request.args.getlist('ingredient')
+    disp_recipe = request.args.getlist('display_recipe')
+    if disp_recipe:
+        disp_recipe[1] = ast.literal_eval(disp_recipe[1])
 
-  return render_template('recipes.html', stock_query=query_stock(current_user.id), ingredients_list=ingredients, display_recipe=disp_recipe)
+    return render_template('recipes.html', 
+                            stock_query=query_stock(current_user.id), 
+                            ingredients_list=ingredients, display_recipe=disp_recipe)
 
 
 @app.route("/generate_recipe", methods=['GET'])
@@ -132,10 +141,10 @@ def generate_recipe():
         APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
 
         params = {
-            'type' : 'public',
-            'q' : str(query_ingredients),
-            'app_id' : APP_ID,
-            'app_key' : APP_KEY,
+            'type': 'public',
+            'q': str(query_ingredients),
+            'app_id': APP_ID,
+            'app_key': APP_KEY,
         }
 
         response = requests.get(BASE_URL, params=params)
@@ -145,11 +154,11 @@ def generate_recipe():
 
         chosen_recipe = recipe_dict['hits'][0]['recipe']
         display_info = []
-        display_info.append(chosen_recipe['label']) # recipe name
+        display_info.append(chosen_recipe['label'])  # recipe name
         print(type(chosen_recipe['ingredientLines']))
-        display_info.append(chosen_recipe['ingredientLines']) # list of ingredients
-        display_info.append(chosen_recipe['shareAs']) # edamam recipe url
-        display_info.append(chosen_recipe['url']) # original recipe url
+        display_info.append(chosen_recipe['ingredientLines'])  # list of ingredients
+        display_info.append(chosen_recipe['shareAs'])  # edamam recipe url
+        display_info.append(chosen_recipe['url'])  # original recipe url
         # display_info.append(shorten_url(chosen_recipe['shareAs'])) # shortened edamam recipe url
         # display_info.append(shorten_url(chosen_recipe['url'])) # shortened original recipe url
 
@@ -170,6 +179,7 @@ def insert_food(user_id, food_name, expiration_date):
     db.session.add(new_item)
     db.session.commit()
 
+
 # check if a user has a food item
 def has_food(user_id):
     food_item = Stock.query.filter_by(user_id=user_id).all()
@@ -177,19 +187,23 @@ def has_food(user_id):
         return food_item
     return None  # user has no food itmes
 
+
 # pulls up all of the stock corresponding to a user
 def query_stock(user_id):
-    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(Stock.user_id == user_id).order_by(Stock.expiration_date)).all()
+    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(
+        Stock.user_id == user_id).order_by(Stock.expiration_date)).all()
     return result
+
 
 # removes a food item with a user's id from the stock table
 def remove_food(user_id, food_name):
-  to_remove = Stock.query.filter_by(user_id=user_id, food_name=food_name).first()
-  if to_remove:
-      msg_text = 'Food item %s successfully removed' % str(to_remove)
-      db.session.delete(to_remove)
-      db.session.commit()
-      print(msg_text)
+    to_remove = Stock.query.filter_by(user_id=user_id, food_name=food_name).first()
+    if to_remove:
+        msg_text = 'Food item %s successfully removed' % str(to_remove)
+        db.session.delete(to_remove)
+        db.session.commit()
+        print(msg_text)
+
 
 def cleanup(signum, frame):
     # uncomment for styling cleanup
