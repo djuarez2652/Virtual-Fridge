@@ -2,6 +2,7 @@ import ast
 import signal
 import requests
 import subprocess
+import git
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_behind_proxy import FlaskBehindProxy
@@ -173,6 +174,17 @@ def generate_recipe():
 
     return redirect(url_for('recipes', ingredient=query_ingredients,
                             display_recipe=display_info))
+
+
+@app.route("/update_server", methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('/home/SEOwk4VirtualFridge/seo-week-4')
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Updated PythonAnywhere successfully', 200
+    else:
+        return 'Wrong event type', 400
 
 
 def shorten_url(url):
