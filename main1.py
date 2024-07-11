@@ -19,6 +19,7 @@ proxied = FlaskBehindProxy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+
 # Represents a website user, specific ID used to keep track of stock
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,7 +30,7 @@ class User(UserMixin, db.Model):
         return f"User('{self.username}', '{self.username}')"
 
 
-# Represents a food table storing all the food and expiration 
+# Represents a food table storing all the food and expiration
 # dates, each associated with a user id
 class Stock(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +40,7 @@ class Stock(db.Model):
 
     def __repr__(self):
         return f"Food('{self.food_name}', '{self.expiration_date}')"
+
 
 with app.app_context():
     db.create_all()
@@ -64,18 +66,19 @@ def login():
             return redirect(url_for('stock'))
         else:
             logout_user()
-            return render_template('login.html', 
-                                    form=login_form, incorrect=True)
+            return render_template('login.html',
+                                   form=login_form, incorrect=True)
 
-    return render_template('login.html', 
-                            subtitle='Login Page', form=login_form, incorrect=False)
+    return render_template('login.html',
+                           subtitle='Login Page', form=login_form, incorrect=False)
 
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
-        user = User(username=reg_form.username.data, password=reg_form.password.data)
+        user = User(username=reg_form.username.data,
+                    password=reg_form.password.data)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -102,8 +105,8 @@ def stock():
         insert_food(user_id, food_name, expiration_date)
         print(has_food(user_id))
         return redirect(url_for("stock"))
-    return render_template('stock.html', 
-                            form=add_stock_form, stock_query=query_stock(current_user.id))
+    return render_template('stock.html',
+                           form=add_stock_form, stock_query=query_stock(current_user.id))
 
 
 # special URL for removal of stock item
@@ -124,9 +127,9 @@ def recipes():
     if disp_recipe:
         disp_recipe[1] = ast.literal_eval(disp_recipe[1])
 
-    return render_template('recipes.html', 
-                            stock_query=query_stock(current_user.id), 
-                            ingredients_list=ingredients, display_recipe=disp_recipe)
+    return render_template('recipes.html',
+                           stock_query=query_stock(current_user.id),
+                           ingredients_list=ingredients, display_recipe=disp_recipe)
 
 
 @app.route("/generate_recipe", methods=['GET'])
@@ -156,7 +159,8 @@ def generate_recipe():
         display_info = []
         display_info.append(chosen_recipe['label'])  # recipe name
         print(type(chosen_recipe['ingredientLines']))
-        display_info.append(chosen_recipe['ingredientLines'])  # list of ingredients
+        # list of ingredients
+        display_info.append(chosen_recipe['ingredientLines'])
         display_info.append(chosen_recipe['shareAs'])  # edamam recipe url
         display_info.append(chosen_recipe['url'])  # original recipe url
         # display_info.append(shorten_url(chosen_recipe['shareAs'])) # shortened edamam recipe url
@@ -175,7 +179,8 @@ def shorten_url(url):
 
 # add a food item to database
 def insert_food(user_id, food_name, expiration_date):
-    new_item = Stock(user_id=user_id, food_name=food_name, expiration_date=expiration_date)
+    new_item = Stock(user_id=user_id, food_name=food_name,
+                     expiration_date=expiration_date)
     db.session.add(new_item)
     db.session.commit()
 
@@ -197,7 +202,8 @@ def query_stock(user_id):
 
 # removes a food item with a user's id from the stock table
 def remove_food(user_id, food_name):
-    to_remove = Stock.query.filter_by(user_id=user_id, food_name=food_name).first()
+    to_remove = Stock.query.filter_by(
+        user_id=user_id, food_name=food_name).first()
     if to_remove:
         msg_text = 'Food item %s successfully removed' % str(to_remove)
         db.session.delete(to_remove)

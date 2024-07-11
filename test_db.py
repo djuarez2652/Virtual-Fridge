@@ -19,10 +19,8 @@ params = {
 response = requests.get(BASE_URL, params=params)
 dict_format = response.json()
 
-print(dict_format['hits'][0]['recipe']['ingredientLines'])  # list of ingredients
-print(dict_format['hits'][0]['recipe']['label']) # recipe name
-print(dict_format['hits'][0]['recipe']['shareAs']) # edamam recipe url
-print(dict_format['hits'][0]['recipe']['url']) # original recipe url
-
-
-
+print(dict_format['hits'][0]['recipe']
+      ['ingredientLines'])  # list of ingredients
+print(dict_format['hits'][0]['recipe']['label'])  # recipe name
+print(dict_format['hits'][0]['recipe']['shareAs'])  # edamam recipe url
+print(dict_format['hits'][0]['recipe']['url'])  # original recipe url

@@ -1,7 +1,9 @@
-import unittest, sys, os
+from main1 import *
+import unittest
+import sys
+import os
 
 sys.path.append('../seo-week-4')
-from main1 import *
 
 
 class UnitTests(unittest.TestCase):
