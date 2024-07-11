@@ -201,7 +201,7 @@ def has_food(user_id):
 
 # pulls up all of the stock corresponding to a user
 def query_stock(user_id):
-    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(Stock.user_id == user_id).order_by(Stock.expiration_date)).all()  #noqa
+    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(Stock.user_id == user_id).order_by(Stock.expiration_date)).all()  # noqa
     return result
 
 
