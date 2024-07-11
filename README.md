@@ -8,7 +8,7 @@ On a separate page, there is a graphical interface that displays the foods and a
 
 The user can also upload pictures of the food label / fresh produce and the website will use AI assistance to parse or generate the expiration date.
 
-Gives user a recipe url.
+Gives user a recipe url and nutrition url.
 
 ## Implementation Details
 
