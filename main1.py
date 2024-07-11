@@ -70,7 +70,8 @@ def login():
                                    form=login_form, incorrect=True)
 
     return render_template('login.html',
-                           subtitle='Login Page', form=login_form, incorrect=False)
+                           subtitle='Login Page',
+                           form=login_form, incorrect=False)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -106,7 +107,8 @@ def stock():
         print(has_food(user_id))
         return redirect(url_for("stock"))
     return render_template('stock.html',
-                           form=add_stock_form, stock_query=query_stock(current_user.id))
+                           form=add_stock_form,
+                           stock_query=query_stock(current_user.id))
 
 
 # special URL for removal of stock item
@@ -129,7 +131,8 @@ def recipes():
 
     return render_template('recipes.html',
                            stock_query=query_stock(current_user.id),
-                           ingredients_list=ingredients, display_recipe=disp_recipe)
+                           ingredients_list=ingredients,
+                           display_recipe=disp_recipe)
 
 
 @app.route("/generate_recipe", methods=['GET'])
@@ -163,10 +166,13 @@ def generate_recipe():
         display_info.append(chosen_recipe['ingredientLines'])
         display_info.append(chosen_recipe['shareAs'])  # edamam recipe url
         display_info.append(chosen_recipe['url'])  # original recipe url
-        # display_info.append(shorten_url(chosen_recipe['shareAs'])) # shortened edamam recipe url
-        # display_info.append(shorten_url(chosen_recipe['url'])) # shortened original recipe url
+        # display_info.append(shorten_url(chosen_recipe['shareAs']))
+        # shortened edamam recipe url
+        # display_info.append(shorten_url(chosen_recipe['url']))
+        # shortened original recipe url
 
-    return redirect(url_for('recipes', ingredient=query_ingredients, display_recipe=display_info))
+    return redirect(url_for('recipes', ingredient=query_ingredients,
+                            display_recipe=display_info))
 
 
 def shorten_url(url):
@@ -195,8 +201,12 @@ def has_food(user_id):
 
 # pulls up all of the stock corresponding to a user
 def query_stock(user_id):
-    result = db.session.execute(db.select(Stock.food_name, Stock.expiration_date).where(
-        Stock.user_id == user_id).order_by(Stock.expiration_date)).all()
+    result = (db.select(Stock.food_name,
+                        Stock.expiration_date)
+              .where(Stock.user_id == user_id)
+              .order_by(Stock.expiration_date)
+              .all())
+
     return result
 
 
