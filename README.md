@@ -1,4 +1,4 @@
-# SEO Week 4 Project
+# SEO Week 4 Project - Virtual Fridge
 
 ## Project Story
 
