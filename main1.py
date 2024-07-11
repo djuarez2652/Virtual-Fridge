@@ -235,7 +235,10 @@ def cleanup(signum, frame):
 
 if __name__ == '__main__':
     # uncomment if working on styling
-    # process = subprocess.Popen(['npx', 'tailwindcss', '-i', './static/styles/input.css', '-o', './static/styles/output.css', '--watch'])
+    # split the process line up to get checkstyle to pass
+    # process = subprocess.Popen(['npx', 'tailwindcss', '-i', 
+    #                           './static/styles/input.css', '-o', 
+    #                           './static/styles/output.css', '--watch'])
     try:
         app.run(debug=True, host="0.0.0.0")
     finally:
