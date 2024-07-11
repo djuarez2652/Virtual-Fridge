@@ -12,15 +12,14 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '83d6f0aedb63b08422f3b396f423f79c'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'  # database filename
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 db = SQLAlchemy(app)
 proxied = FlaskBehindProxy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 
-class User(UserMixin, db.Model):  # Represents table for a single user, can change if using different thing
-  id = db.Column(db.Integer, primary_key=True)
+class User(UserMixin, db.Model):  # Represents a website user, specific ID used to keep track of stock
   username = db.Column(db.String(20), unique=True, nullable=False)
   password = db.Column(db.String(60), nullable=False)
 
@@ -34,7 +33,6 @@ class Stock(db.Model):  # Represents a food table storing all the food and expir
     food_name = db.Column(db.String(100), nullable=False)
     expiration_date = db.Column(db.Date, nullable=False)
 
-
     def __repr__(self):
         return f"Food('{self.food_name}', '{self.expiration_date}')"
 
@@ -47,7 +45,7 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-@app.route("/")      
+@app.route("/")
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
@@ -68,7 +66,7 @@ def login():
 
 
 @app.route("/register", methods=['GET', 'POST'])
-def register():  # change if using different register thing
+def register():
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
         user = User(username=reg_form.username.data, password=reg_form.password.data)
@@ -76,7 +74,7 @@ def register():  # change if using different register thing
         db.session.commit()
         login_user(user)
         return redirect(url_for('stock'))
-    
+
     return render_template('register.html', title='Register', form=reg_form)
 
 
@@ -100,6 +98,7 @@ def stock():
         return redirect(url_for("stock"))
     return render_template('stock.html', form=add_stock_form, stock_query=query_stock(current_user.id))
 
+
 # special URL for removal of stock item
 @app.route("/remove_stock", methods=['GET'])
 def remove_stock():
@@ -108,10 +107,10 @@ def remove_stock():
 
   return redirect(url_for('stock'))
 
+
 @app.route("/recipes")
 @login_required
 def recipes():
-
   # get ingredients, if any
   ingredients = request.args.getlist('ingredient')
   disp_recipe = request.args.getlist('display_recipe')
@@ -124,16 +123,14 @@ def recipes():
 @app.route("/generate_recipe", methods=['GET'])
 @login_required
 def generate_recipe():
-
     # get ingredients, if any
     query_ingredients = request.args.getlist('input')
-
 
     if query_ingredients:
         BASE_URL = 'https://api.edamam.com/api/recipes/v2'
         APP_ID = 'd3661e3f'
         APP_KEY = '1c75873f67d56f2a5c48a2b82f53cc56'
-        
+
         params = {
             'type' : 'public',
             'q' : str(query_ingredients),
@@ -144,7 +141,7 @@ def generate_recipe():
         response = requests.get(BASE_URL, params=params)
         recipe_dict = response.json()
 
-        # check if recipe actually found:
+        # check if recipe actually found
 
         chosen_recipe = recipe_dict['hits'][0]['recipe']
         display_info = []
